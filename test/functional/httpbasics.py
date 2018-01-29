@@ -70,13 +70,14 @@ class HTTPBasicsTest (BitcoinTestFramework):
         #node1 (2nd node) is running with disabled keep-alive option
         urlNode1 = urllib.parse.urlparse(self.nodes[1].url)
         authpair = urlNode1.username + ':' + urlNode1.password
-        headers = {"Authorization": "Basic " + str_to_b64str(authpair)}
+        headers = {"Authorization": "Basic " + str_to_b64str(authpair), "Connection":"close"}
 
         conn = http.client.HTTPConnection(urlNode1.hostname, urlNode1.port)
         conn.connect()
         conn.request('POST', '/', '{"method": "getbestblockhash"}', headers)
         out1 = conn.getresponse().read()
         assert(b'"error":null' in out1)
+        assert(conn.sock==None)
 
         #node2 (third node) is running with standard keep-alive parameters which means keep-alive is on
         urlNode2 = urllib.parse.urlparse(self.nodes[2].url)
