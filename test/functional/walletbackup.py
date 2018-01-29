@@ -43,6 +43,13 @@ class WalletBackupTest(BitcoinTestFramework):
         # nodes 1, 2,3 are spenders, let's give them a keypool=100
         self.extra_args = [["-keypool=100"], ["-keypool=100"], ["-keypool=100"], []]
 
+    def setup_nodes(self):
+        extra_args = None
+        if hasattr(self, "extra_args"):
+            extra_args = self.extra_args
+        self.add_nodes(self.num_nodes, extra_args, rpchost=None, timewait=120)
+        self.start_nodes()
+
     def setup_network(self, split=False):
         self.setup_nodes()
         connect_nodes(self.nodes[0], 3)
